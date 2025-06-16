@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  stirling-pdf:
+    container_name: stirling-pdf
+    image: docker.stirlingpdf.com/stirlingtools/stirling-pdf:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      # Persistent data volumes for configuration and files
+      - ./data/tessdata:/usr/share/tessdata:rw       # OCR language data
+      - ./data/configs:/configs:rw                   # Application configuration
+      - ./data/customFiles:/customFiles:rw           # Custom files and themes
+      - ./data/logs:/logs:rw                         # Application logs
+      - ./data/pipeline:/pipeline:rw                 # Pipeline configurations
+    environment:
+      # Security settings
+      DOCKER_ENABLE_SECURITY: "false"               # Disable for development
+      SECURITY_ENABLELOGIN: "false"                 # Disable login for Codespace
+      SECURITY_CSRFDISABLED: "true"                 # Disable CSRF for development
+      
+      # Feature settings
+      INSTALL_BOOK_AND_ADVANCED_HTML_OPS: "true"    # Enable advanced features
+      DISABLE_ADDITIONAL_FEATURES: "false"          # Enable all features
+      
+      # Localization
+      LANGS: "en_US,en_GB,de_DE,fr_FR,es_ES,zh_CN,zh_TW,ca_CA,it_IT,sv_SE,pl_PL,ro_RO,ko_KR,pt_BR,ru_RU,el_GR,hi_IN,hu_HU,tr_TR,id_ID"
+      SYSTEM_DEFAULTLOCALE: "en_US"
+      
+      # UI Customization
+      UI_APPNAME: "Stirling PDF"
+      UI_HOMEDESCRIPTION: "Your locally hosted PDF manipulation toolkit"
+      UI_APPNAMENAVBAR: "Stirling PDF"
+      
+      # System settings
+      SYSTEM_MAXFILESIZE: "2000"                    # Max file size in MB
+      SYSTEM_CONNECTIONTIMEOUTMINUTES: "5"
+      
+      # Analytics (disabled for privacy)
+      SYSTEM_ENABLEANALYTICS: "false"
+    
+    restart: unless-stopped
+    
+    # Health check to ensure service is running
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/api/v1/info/status | grep -q 'UP' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    # Resource limits for Codespace
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 512M

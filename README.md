@@ -1,0 +1,178 @@
+# Stirling PDF - GitHub Codespace
+
+A ready-to-use GitHub Codespace setup for [Stirling PDF](https://github.com/Stirling-Tools/Stirling-PDF), a powerful locally-hosted web-based PDF manipulation tool.
+
+## 🚀 Quick Start
+
+1. **Open in Codespace**: Click the green "Code" button and select "Create Codespace on main"
+2. **Wait for Setup**: The environment will automatically configure and start Stirling PDF
+3. **Access the Application**: Once ready, visit the forwarded port (usually shown in the terminal or ports tab)
+
+## 📋 Features
+
+Stirling PDF provides a comprehensive suite of PDF tools including:
+
+- **Split & Merge**: Combine multiple PDFs or split them into separate files
+- **Convert**: Transform documents to/from PDF (supports Word, Excel, PowerPoint, images)
+- **OCR**: Extract text from scanned documents and images
+- **Compress**: Reduce file sizes while maintaining quality  
+- **Security**: Add passwords, watermarks, and digital signatures
+- **Edit**: Add text, images, annotations, and forms
+- **Organize**: Rotate, reorder, and remove pages
+- **Extract**: Pull out images, text, or specific pages
+
+## 🗂️ Data Persistence
+
+All data is persisted in the `./data/` directory:
+
+```
+data/
+├── tessdata/       # OCR language files (.traineddata)
+├── configs/        # Application configuration files  
+├── customFiles/    # Custom themes, logos, static files
+├── logs/          # Application logs
+└── pipeline/      # Processing pipeline configurations
+```
+
+## ⚙️ Configuration
+
+### Basic Settings
+
+Edit `./data/configs/settings.yml` to customize:
+
+- Security settings (login, CSRF protection)
+- UI appearance (app name, descriptions)
+- System limits (max file size, timeouts)
+- Feature toggles
+
+### OCR Languages
+
+Add OCR support for additional languages:
+
+1. Download `.traineddata` files from [Tesseract repository](https://github.com/tesseract-ocr/tessdata)
+2. Place them in `./data/tessdata/`
+3. Restart the container: `docker-compose restart`
+
+Common language files:
+- English: `eng.traineddata` (included by default)
+- French: `fra.traineddata`
+- German: `deu.traineddata`  
+- Spanish: `spa.traineddata`
+- Chinese (Simplified): `chi_sim.traineddata`
+
+### Environment Variables
+
+Modify `docker-compose.yml` to adjust environment variables:
+
+```yaml
+environment:
+  SECURITY_ENABLELOGIN: "true"          # Enable user authentication
+  SYSTEM_MAXFILESIZE: "1000"           # Set max file size (MB)
+  LANGS: "en_US,fr_FR,de_DE"           # Supported languages
+  UI_APPNAME: "My PDF Tools"           # Custom app name
+```
+
+## 🐳 Docker Commands
+
+Manage the Stirling PDF container:
+
+```bash
+# View logs
+docker-compose logs -f
+
+# Restart service  
+docker-compose restart
+
+# Stop service
+docker-compose down
+
+# Start service
+docker-compose up -d
+
+# View container status
+docker-compose ps
+
+# Access container shell
+docker-compose exec stirling-pdf bash
+```
+
+## 🔧 Troubleshooting
+
+### Service Won't Start
+
+1. Check logs: `docker-compose logs stirling-pdf`
+2. Verify port availability: `netstat -tlnp | grep 8080`
+3. Restart the container: `docker-compose restart`
+
+### OCR Not Working
+
+1. Verify language files exist: `ls -la data/tessdata/`
+2. Check file permissions: `chmod 644 data/tessdata/*.traineddata`
+3. Restart after adding new languages
+
+### Upload Issues
+
+1. Check max file size setting in `docker-compose.yml`
+2. Verify disk space: `df -h`
+3. Review application logs for specific errors
+
+### Performance Issues
+
+1. Increase memory limits in `docker-compose.yml`:
+   ```yaml
+   deploy:
+     resources:
+       limits:
+         memory: 4G
+   ```
+2. Monitor resource usage: `docker stats stirling-pdf`
+
+## 🔒 Security Considerations
+
+**For Development Only**: This configuration disables security features for ease of use in Codespaces.
+
+For production deployment:
+
+1. Enable authentication:
+   ```yaml
+   SECURITY_ENABLELOGIN: "true"
+   DOCKER_ENABLE_SECURITY: "true"
+   ```
+
+2. Set strong passwords:
+   ```yaml
+   SECURITY_INITIALLOGIN_USERNAME: "admin"
+   SECURITY_INITIALLOGIN_PASSWORD: "your-strong-password"
+   ```
+
+3. Enable CSRF protection:
+   ```yaml
+   SECURITY_CSRFDISABLED: "false"
+   ```
+
+4. Use HTTPS with reverse proxy (nginx, Traefik, etc.)
+
+## 📚 Additional Resources
+
+- [Stirling PDF Documentation](https://docs.stirlingpdf.com/)
+- [GitHub Repository](https://github.com/Stirling-Tools/Stirling-PDF)  
+- [Docker Hub](https://hub.docker.com/r/stirlingtools/stirling-pdf)
+- [Configuration Guide](https://docs.stirlingpdf.com/Advanced%20Configuration/How%20to%20add%20configurations/)
+
+## 🤝 Contributing
+
+1. Fork this repository
+2. Create your feature branch: `git checkout -b feature/amazing-feature`
+3. Commit changes: `git commit -m 'Add amazing feature'`
+4. Push to branch: `git push origin feature/amazing-feature`
+5. Open a Pull Request
+
+## 📄 License
+
+This project configuration is open source. Stirling PDF itself is licensed under the GPL-3.0 license.
+
+## 🆘 Support
+
+- Create an issue for bugs or feature requests
+- Check existing issues before creating new ones
+- Provide detailed information including logs and steps to reproduce

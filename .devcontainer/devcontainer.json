@@ -1,0 +1,45 @@
+{
+  "name": "Stirling PDF Development Environment",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "stirling-pdf",
+  "workspaceFolder": "/workspace",
+  
+  // Configure tool-specific properties
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.vscode-docker",
+        "redhat.vscode-yaml",
+        "ms-vscode.vscode-json"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  },
+
+  // Features to add to the dev container
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+
+  // Forward the Stirling PDF port
+  "forwardPorts": [8080],
+  "portsAttributes": {
+    "8080": {
+      "label": "Stirling PDF",
+      "onAutoForward": "openPreview"
+    }
+  },
+
+  // Use 'postCreateCommand' to run commands after the container is created
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+
+  // Configure container user
+  "remoteUser": "root",
+  
+  // Keep container running
+  "shutdownAction": "stopCompose"
+}
