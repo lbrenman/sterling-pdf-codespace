@@ -6,7 +6,7 @@ A ready-to-use GitHub Codespace setup for Stirling PDF, a powerful locally-hoste
 
 1. **Open in Codespace**: Click the green "Code" button and select "Create Codespace on main"
 2. **Wait for Setup**: The environment will automatically configure
-3. **Start Stirling PDF**: Run `./start-stirling.sh` in the terminal
+3. **Start Stirling PDF**: Run `chmod +x start-sterling.sh` and then `./start-sterling.sh` in the terminal
 4. **Access the Application**: Visit http://localhost:8080 (or use the forwarded port)
 
 ## 📋 Features
