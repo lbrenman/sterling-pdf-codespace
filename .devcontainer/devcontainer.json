@@ -1,10 +1,7 @@
 {
   "name": "Stirling PDF Development Environment",
-  "dockerComposeFile": "../docker-compose.yml",
-  "service": "stirling-pdf",
-  "workspaceFolder": "/workspace",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
   
-  // Configure tool-specific properties
   "customizations": {
     "vscode": {
       "extensions": [
@@ -18,14 +15,18 @@
     }
   },
 
-  // Features to add to the dev container
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2": {},
     "ghcr.io/devcontainers/features/git:1": {},
     "ghcr.io/devcontainers/features/github-cli:1": {}
   },
 
-  // Forward the Stirling PDF port
+  "mounts": [
+    "source=${localWorkspaceFolder},target=/workspace,type=bind"
+  ],
+  
+  "workspaceFolder": "/workspace",
+
   "forwardPorts": [8080],
   "portsAttributes": {
     "8080": {
@@ -34,12 +35,7 @@
     }
   },
 
-  // Use 'postCreateCommand' to run commands after the container is created
-  "postCreateCommand": "bash .devcontainer/setup.sh",
+  "postCreateCommand": "cd /workspace && chmod +x .devcontainer/setup.sh start-stirling.sh && ./.devcontainer/setup.sh",
 
-  // Configure container user
-  "remoteUser": "root",
-  
-  // Keep container running
-  "shutdownAction": "stopCompose"
+  "remoteUser": "vscode"
 }
